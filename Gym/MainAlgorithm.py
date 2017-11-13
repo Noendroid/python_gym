@@ -19,7 +19,7 @@ def get_data_from_file(file_name):
 
 def get_groups(points, centers):
     groups = []
-    for c in centers:
+    for c in range(len(centers)):
         groups.append([])
     for p in points:
         centers_distances = []
@@ -63,9 +63,6 @@ def main():
     k = 2
     new_centers = [None] * k
     points = get_data_from_file("data.TXT")
-    old_dist_sum = [0] * k
-    new_dist_sum = [None] * k
-
     # while True:
     #     for i in range(k):
     #         new_centers[i] = points[random.randint(0, len(points) - 1)]
@@ -97,11 +94,11 @@ def main():
     figure = plt.figure()
     figure.canvas.set_window_title("Kmeans")
     axes = figure.add_subplot(1, 1, 1)
-    colorRange = list(range(0x000000, 0xEFFFFF)) + list(range(0xFEFFFF, 0xEFFFFF))
+    color_range = list(range(0x000000, 0xEFFFFF)) + list(range(0xFEFFFF, 0xEFFFFF))
     for g in groups:
-        randonColor = "#{:06x}".format(random.choice(colorRange))
+        random_color = "#{:06x}".format(random.choice(color_range))
         for point in g:
-            axes.scatter(point.attributes[0], point.attributes[1], color=randonColor)
+            axes.scatter(point.attributes[0], point.attributes[1], color=random_color)
 
     for c in new_centers:
         axes.scatter(c.attributes[0], c.attributes[1], color="#ff0000")
