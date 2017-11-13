@@ -1,5 +1,4 @@
 import random
-from math import inf
 
 import matplotlib.pyplot as plt
 
@@ -43,42 +42,56 @@ def get_new_centers(centers, groups):
     return centers
 
 
+def same_centers(old, new):
+    if len(old) != len(new):
+        return False
+    for i in range(len(old)):
+        if old[i].attributes is not new[i].attributes:
+            return False
+    return True
+
+
 def get_distances_sum(centers, groups):
     distances = []
     for i in range(len(centers)):
         distances.append([])
-    # continue from here
-
+        # continue from here
 
 
 def main():
     print("start")
     k = 2
-    centers = [None] * k
+    new_centers = [None] * k
     points = get_data_from_file("data.TXT")
     old_dist_sum = [0] * k
     new_dist_sum = [None] * k
 
+    # while True:
+    #     for i in range(k):
+    #         new_centers[i] = points[random.randint(0, len(points) - 1)]
+    #         for a in new_centers[i].attributes:
+    #             a += random.randint(-100, 100)
+    #     if len(new_centers) == len(set(new_centers)):
+    #         break
+
+    for i in range(k):
+        new_centers[i] = points[random.randint(0, len(points) - 1)]
+        for a in new_centers[i].attributes:
+            a += random.randint(-50, 50)
+
     while True:
-        for i in range(k):
-            centers[i] = points[random.randint(0, len(points) - 1)]
-            for a in centers[i].attributes:
-                a += random.randint(-100, 100)
-        if len(centers) == len(set(centers)):
+        old_centers = new_centers
+        groups = get_groups(points, new_centers)
+        new_centers = get_new_centers(new_centers, groups)
+        if same_centers(old_centers, new_centers):
             break
+            # new_dist_sum = get_distances_sum(new_centers, groups)
+            # if new_dist_sum == old_dist_sum:
+            #     break
+            # else:
+            #     old_dist_sum = new_dist_sum
 
-    count = 0
-    while True:
-        groups = get_groups(points, centers)
-        centers = get_new_centers(centers, groups)
-        new_dist_sum = get_distances_sum(centers, groups)
-        if new_dist_sum == old_dist_sum:
-            break
-        else:
-            old_dist_sum = new_dist_sum
-
-
-    for c in centers:
+    for c in new_centers:
         print(c.attributes)
 
     figure = plt.figure()
@@ -90,7 +103,7 @@ def main():
         for point in g:
             axes.scatter(point.attributes[0], point.attributes[1], color=randonColor)
 
-    for c in centers:
+    for c in new_centers:
         axes.scatter(c.attributes[0], c.attributes[1], color="#ff0000")
 
     plt.show()

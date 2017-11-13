@@ -27,3 +27,11 @@ class Point:
             dist += pow(a - point.attributes[i], 2)
         dist = sqrt(dist)
         return dist
+
+    def __eq__(self, other):
+        if len(other.attributes) != len(self.attributes):
+            return False
+        for i in range(len(self.attributes)):
+            if self.attributes[i] != other.attributes[i]:
+                return False
+        return True
