@@ -2,7 +2,7 @@ import random
 
 import matplotlib.pyplot as plt
 
-from Point import Point
+from Point_array import Point
 
 
 def get_data_from_file(file_name):
@@ -10,11 +10,11 @@ def get_data_from_file(file_name):
     with open(file_name, "r") as customers_file:
         for line in customers_file:
             details.append(line.split("\t"))
-    arr = []
+    items = []
     for d in details:
         c = Point(d)
-        arr.append(c)
-    return arr
+        items.append(c)
+    return items
 
 
 def get_groups(points, centers):
@@ -32,11 +32,11 @@ def get_groups(points, centers):
 
 def get_new_centers(centers, groups):
     for i, c in enumerate(centers):
-        c.sum = [0] * len(c.attributes)
+        c.sum = [0] * 2
         if len(groups[i]) > 0:
             for point in groups[i]:
-                for x, a in enumerate(point.attributes):
-                    c.sum[x] += a
+                c.sum[0] += point.x
+                c.sum[1] += point.y
             for x, a in enumerate(c.attributes):
                 a = c.sum[x] / len(groups[i])
     return centers
@@ -51,11 +51,11 @@ def same_centers(old, new):
     return True
 
 
-def get_distances_sum(centers, groups):
-    distances = []
-    for i in range(len(centers)):
-        distances.append([])
-        # continue from here
+def get_distance(center, points):
+    distance_sum = 0
+    for p in points:
+        distance_sum += center.dist(p)
+    return distance_sum
 
 
 def main():
@@ -75,18 +75,33 @@ def main():
         new_centers[i] = points[random.randint(0, len(points) - 1)]
         for a in new_centers[i].attributes:
             a += random.randint(-50, 50)
-
     while True:
-        old_centers = new_centers
         groups = get_groups(points, new_centers)
-        new_centers = get_new_centers(new_centers, groups)
-        if same_centers(old_centers, new_centers):
-            break
-            # new_dist_sum = get_distances_sum(new_centers, groups)
-            # if new_dist_sum == old_dist_sum:
-            #     break
-            # else:
-            #     old_dist_sum = new_dist_sum
+        old_sums = [0] * len(new_centers)
+        for i, c in enumerate(new_centers):
+            for g in groups[i]:
+                old_sums[i] = get_distance(c, g)
+        new_centers = get_new_centers(new_centers, points)
+        new_sums = [0] * len(new_centers)
+        for i, c in enumerate(new_centers):
+            for g in groups[i]:
+                new_sums[i] = get_distance(c, g)
+
+        print(new_sums)
+        print(old_sums)
+        break
+
+    # while True:
+    #     old_centers = new_centers
+    #     groups = get_groups(points, new_centers)
+    #     new_centers = get_new_centers(new_centers, groups)
+    #     if same_centers(old_centers, new_centers):
+    #         break
+    #         # new_dist_sum = get_distances_sum(new_centers, groups)
+    #         # if new_dist_sum == old_dist_sum:
+    #         #     break
+    #         # else:
+    #         #     old_dist_sum = new_dist_sum
 
     for c in new_centers:
         print(c.attributes)
