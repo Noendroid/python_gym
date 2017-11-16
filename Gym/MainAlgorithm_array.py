@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from Group import Group
 from Point_array import Point
+from numpy import array_equal
 
 
 def get_data_from_file(file_name):
@@ -75,12 +76,12 @@ def main():
     # (2)set random points from the data to be the centers
     # (3)get groups for those centers
     # (4)start a loop:
-    #       calculate new centers for the old groups
-    #       if the distances of those groups equal to the previous:
+    #       (4.1)calculate new centers for the old groups
+    #       (4.2)if the distances of those groups equal to the previous:
     #            break loop
     #       else
-    #       create new groups
-    #       set old centers to be the new centers
+    #       (4.3)create new groups
+    #       (4.4)set old centers to be the new centers
     #       loop again
     # (5)show the results on the graph
 
@@ -100,14 +101,30 @@ def main():
 
     # (3)
     groups = get_groups(points, centers)
-
+    dist = []
+    for g in groups:
+        dist.append(g.center_dist())
     # (4)
     while True:
         print("while")
+        # (4.1)
         new_centers = []
         for g in groups:
             new_centers.append(g.center)
-        
+        # (4.2)
+        new_dist = []
+        for g in groups:
+            new_dist.append(g.center_dist())
+        if array_equal(set(dist), set(new_dist)):
+            print("equal")
+            break
+        # (4.3)
+        dist = new_dist
+        centers = new_centers
+        groups = get_groups(points, centers)
+        for c in centers:
+            print(c)
+        print("done")
         exit(0)
     # while True:
     #     old_centers = new_centers
@@ -121,22 +138,22 @@ def main():
     #         # else:
     #         #     old_dist_sum = new_dist_sum
 
-    for c in centers:
-        print(c.attributes)
-
-    figure = plt.figure()
-    figure.canvas.set_window_title("Kmeans")
-    axes = figure.add_subplot(1, 1, 1)
-    color_range = list(range(0x000000, 0xEFFFFF)) + list(range(0xFEFFFF, 0xEFFFFF))
-    for g in groups:
-        random_color = "#{:06x}".format(random.choice(color_range))
-        for point in g:
-            axes.scatter(point.attributes[0], point.attributes[1], color=random_color)
-
-    for c in centers:
-        axes.scatter(c.attributes[0], c.attributes[1], color="#ff0000")
-
-    plt.show()
+    # for c in centers:
+    #     print(c.attributes)
+    #
+    # figure = plt.figure()
+    # figure.canvas.set_window_title("Kmeans")
+    # axes = figure.add_subplot(1, 1, 1)
+    # color_range = list(range(0x000000, 0xEFFFFF)) + list(range(0xFEFFFF, 0xEFFFFF))
+    # for g in groups:
+    #     random_color = "#{:06x}".format(random.choice(color_range))
+    #     for point in g:
+    #         axes.scatter(point.attributes[0], point.attributes[1], color=random_color)
+    #
+    # for c in centers:
+    #     axes.scatter(c.attributes[0], c.attributes[1], color="#ff0000")
+    #
+    # plt.show()
 
 
 if __name__ == '__main__':
