@@ -80,7 +80,7 @@ def main():
     #       (4.2)if the distances of those groups equal to the previous:
     #            break loop
     #       else
-    #       (4.3)create new groups
+    #       (4.3)create new groups for the new centers
     #       (4.4)set old centers to be the new centers
     #       loop again
     # (5)show the results on the graph
@@ -91,69 +91,54 @@ def main():
     centers = [None] * k
     points = get_data_from_file("data.TXT")
     # (2)
-    while True:
-        for i in range(k):
-            centers[i] = points[random.randint(0, len(points) - 1)]
-            # for a in centers[i].attributes:
-            #     a += random.randint(-100, 100)
-        # if len(centers) == len(set(centers)):
-        break
+    for i in range(k):
+        centers[i] = points[random.randint(0, len(points) - 1)]
 
     # (3)
     groups = get_groups(points, centers)
     dist = []
     for g in groups:
+        g.init_center()
         dist.append(g.center_dist())
     # (4)
     while True:
         print("while")
         # (4.1)
-        new_centers = []
+        new_centers = list()
         for g in groups:
+            g.init_center()
             new_centers.append(g.center)
         # (4.2)
+        groups = get_groups(points, new_centers)
         new_dist = []
         for g in groups:
             new_dist.append(g.center_dist())
-        if array_equal(set(dist), set(new_dist)):
-            print("equal")
+        flag = True
+        for i in range(len(new_dist)):
+            if dist[i] != new_dist[i]:
+                flag = False
+        if flag:
             break
         # (4.3)
-        dist = new_dist
-        centers = new_centers
-        groups = get_groups(points, centers)
+        dist = list(new_dist)
+        centers = list(new_centers)
+        groups = get_groups(points, new_centers)
         for c in centers:
             print(c)
-        print("done")
-        exit(0)
-    # while True:
-    #     old_centers = new_centers
-    #     groups = get_groups(points, new_centers)
-    #     new_centers = get_new_centers(new_centers, groups)
-    #     if same_centers(old_centers, new_centers):
-    #         break
-    #         # new_dist_sum = get_distances_sum(new_centers, groups)
-    #         # if new_dist_sum == old_dist_sum:
-    #         #     break
-    #         # else:
-    #         #     old_dist_sum = new_dist_sum
 
-    # for c in centers:
-    #     print(c.attributes)
-    #
-    # figure = plt.figure()
-    # figure.canvas.set_window_title("Kmeans")
-    # axes = figure.add_subplot(1, 1, 1)
-    # color_range = list(range(0x000000, 0xEFFFFF)) + list(range(0xFEFFFF, 0xEFFFFF))
-    # for g in groups:
-    #     random_color = "#{:06x}".format(random.choice(color_range))
-    #     for point in g:
-    #         axes.scatter(point.attributes[0], point.attributes[1], color=random_color)
-    #
-    # for c in centers:
-    #     axes.scatter(c.attributes[0], c.attributes[1], color="#ff0000")
-    #
-    # plt.show()
+    figure = plt.figure()
+    figure.canvas.set_window_title("Kmeans")
+    axes = figure.add_subplot(1, 1, 1)
+    color_range = list(range(0x000000, 0xEFFFFF)) + list(range(0xFEFFFF, 0xEFFFFF))
+    for g in groups:
+        random_color = "#{:06x}".format(random.choice(color_range))
+        for point in g.points:
+            axes.scatter(point.attributes[0], point.attributes[1], color=random_color)
+
+    for c in centers:
+        axes.scatter(c.attributes[0], c.attributes[1], color="#ff0000")
+
+    plt.show()
 
 
 if __name__ == '__main__':

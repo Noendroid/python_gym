@@ -13,7 +13,7 @@ class Group:
         sums = [0] * len(self.points[0].attributes)
         count = 0
         for p in self.points:
-            for i, attribute in enumerate(self.points[0].attributes):
+            for i, attribute in enumerate(p.attributes):
                 sums[i] += attribute
             count += 1
         avg = []

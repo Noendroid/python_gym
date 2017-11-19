@@ -1,5 +1,6 @@
 from math import pow
 from math import sqrt
+from math import fabs
 
 
 class Point:
@@ -23,5 +24,6 @@ class Point:
 
     def dist(self, point):
         dist = pow(self.x - point.x, 2) + pow(self.y - point.y, 2)
+        dist = fabs(dist)
         dist = sqrt(dist)
         return dist
