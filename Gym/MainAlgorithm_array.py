@@ -86,7 +86,6 @@ def main():
     # (5)show the results on the graph
 
     # (1)
-    print("start")
     k = 2
     centers = [None] * k
     points = get_data_from_file("data.TXT")
@@ -102,7 +101,6 @@ def main():
         dist.append(g.center_dist())
     # (4)
     while True:
-        print("while")
         # (4.1)
         new_centers = list()
         for g in groups:
@@ -123,8 +121,10 @@ def main():
         dist = list(new_dist)
         centers = list(new_centers)
         groups = get_groups(points, new_centers)
-        for c in centers:
-            print(c)
+
+    print("centers:")
+    for c in centers:
+        print(c)
 
     figure = plt.figure()
     figure.canvas.set_window_title("Kmeans")
